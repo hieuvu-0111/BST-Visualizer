@@ -2,7 +2,7 @@
 Binary Search Tree visualizer with methods including traversal, searching, insertion and deletion
 
 ## Example Flow for Insertion:
-
+```
 User types "42", clicks Enter
         │
         ▼
@@ -27,3 +27,4 @@ InsertController.execute(42, onComplete)
                 engine.play(finalFrame, onComplete)
                   finalFrame: path=yellow, new node=green
                 when done → BSTController.releaseLock()
+```
