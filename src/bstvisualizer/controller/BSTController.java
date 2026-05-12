@@ -73,6 +73,13 @@ public class BSTController {
         canvas.resetAllStates();
     }
 
+    public void requestClearAll() {
+        if (busy) return; 
+            tree.clear();
+            canvas.resetAllStates();
+            canvas.layoutAndRepaint();
+    }
+
     // Lock helpers
 
     private boolean acquireLock() {

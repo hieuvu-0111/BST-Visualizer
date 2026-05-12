@@ -51,13 +51,37 @@ public class InputPanel extends JPanel {
         btnRow.add(visualizeBtn);
         btnRow.add(randomBtn);
 
-        // Layout 
-        JPanel top = new JPanel(new BorderLayout(0, 4));
-        top.add(lbl,    BorderLayout.NORTH);
-        top.add(scroll, BorderLayout.CENTER);
-        top.add(btnRow, BorderLayout.SOUTH);
+        // Tạo panel chứa phần nhập liệu và các nút Visualize/Random ở phía trên
+        JPanel inputArea = new JPanel(new BorderLayout(0, 4));
+        inputArea.add(lbl,      BorderLayout.NORTH);
+        inputArea.add(scroll,   BorderLayout.CENTER);
+        inputArea.add(btnRow,    BorderLayout.SOUTH);
 
-        add(top, BorderLayout.NORTH);
+        // Tạo panel chứa các nút reset ở phía dưới (ngay trên Legend)
+        // Đổi thành GridLayout(2, 1) để mỗi nút nằm trên 1 dòng riêng biệt
+        JPanel resetBtnRow = new JPanel(new GridLayout(2, 1, 0, 6));
+        JButton resetHighlightsBtn = new JButton("Reset Path");
+        JButton clearTreeBtn = new JButton("Clear All");
+
+        clearTreeBtn.setForeground(Color.RED); 
+
+        resetHighlightsBtn.addActionListener(e -> controller.resetAllHighlights());
+
+        clearTreeBtn.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(this, 
+                "Xóa toàn bộ cây và làm trống trang?", 
+                "Xác nhận Clear", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                controller.requestClearAll();
+            }
+        });
+
+        resetBtnRow.add(resetHighlightsBtn);
+        resetBtnRow.add(clearTreeBtn);
+
+        // Sắp xếp các thành phần chính vào InputPanel
+        add(inputArea, BorderLayout.NORTH);
+        add(resetBtnRow, BorderLayout.SOUTH);
     }
 
     // Actions 

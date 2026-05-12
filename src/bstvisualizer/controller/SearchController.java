@@ -1,6 +1,7 @@
 package bstvisualizer.controller;
 
 import bstvisualizer.model.AnimationStep;
+import bstvisualizer.model.BSTNode;
 import bstvisualizer.model.BSTree;
 import bstvisualizer.view.AnimationEngine;
 import bstvisualizer.view.TreeCanvas;
@@ -10,10 +11,9 @@ import java.util.List;
 /**
  * Handles SEARCH.
  *
- * TODO (teammate): implement buildSteps() to produce one AnimationStep
- * per node visited during search.  On success the final step should use
- * StepType.NODE_FOUND with the found key in targetKeys.
- * On failure use StepType.NODE_NOT_FOUND with an empty targetKeys.
+ * Triển khai build các AnimationStep để mô phỏng quá trình tìm kiếm nút.
+ * Khi thành công, bước cuối cùng sử dụng StepType.NODE_FOUND.
+ * Khi thất bại, sử dụng StepType.NODE_NOT_FOUND.
  */
 public class SearchController {
 
@@ -28,9 +28,54 @@ public class SearchController {
     }
 
     public void execute(int key, Runnable onComplete) {
-        // TODO: replace stub with real implementation
         List<AnimationStep> steps = new ArrayList<>();
-        steps.add(AnimationStep.path(-1, "Search not yet implemented."));
+        List<Integer> visited = new ArrayList<>();
+        
+        BSTNode current = tree.getRoot();
+
+        if (current == null) {
+            steps.add(new AnimationStep(
+                AnimationStep.StepType.NODE_NOT_FOUND, 
+                List.of(), List.of(), 
+                "Not found. The tree is empty. " + key));
+        } else {
+            while (current != null) {
+                visited.add(current.key);
+                
+                if (key == current.key) {
+                    steps.add(new AnimationStep(
+                        AnimationStep.StepType.NODE_FOUND, 
+                        new ArrayList<>(visited), 
+                        List.of(key), 
+                        "Founded " + key + "!"));
+                    break;
+                } else if (key < current.key) {
+                    steps.add(new AnimationStep(
+                        AnimationStep.StepType.TRAVERSE_PATH, 
+                        new ArrayList<>(visited), 
+                        List.of(), 
+                        key + " < " + current.key + " → Move Left"));
+                    current = current.left;
+                } else {
+ 
+                    steps.add(new AnimationStep(
+                        AnimationStep.StepType.TRAVERSE_PATH, 
+                        new ArrayList<>(visited), 
+                        List.of(), 
+                        key + " > " + current.key + " → Move Right"));
+                    current = current.right;
+                }
+
+                if (current == null) {
+                    steps.add(new AnimationStep(
+                        AnimationStep.StepType.NODE_NOT_FOUND, 
+                        new ArrayList<>(visited), 
+                        List.of(), 
+                        "Not Found " + key + " in Tree."));
+                }
+            }
+        }
+
         engine.play(steps, onComplete);
     }
 }
